@@ -40,9 +40,7 @@ public class CreatedAtTransformation implements ASTTransformation {
         // Also, generate a public final method returning the value stored in the field. The name of the method should be configurable through 
         // the annotation 'name' parameter.
         // Additionally, all existing methods of the class should be enhanced so that they reset the time stored in the field to the current time,
-        // whenever they are called, but ONLY if more than 1 second has elapsed since the latest update to the time stored in the field.
-        // A new method, named "clearTimestamp()" must be added to the class. This method sets the time stored in the field to "0".
-                
+        // whenever they are called, but ONLY if more than 1 second has elapsed since the last update to the time stored in the field.
         // Fill in the missing AST generation code to make the script pass
         // You can take inspiration from exercises
         // Documentation and hints:
@@ -59,10 +57,9 @@ public class CreatedAtTransformation implements ASTTransformation {
         // ClassNode.addMethod() accepts a BlockStatement
         
         //TODO Implement this method
-
         String timestampFieldName = astNodes[0].members.name.value
         ClassNode annotatedClass = astNodes[1]
-        annotatedClass.addField("objectCreationTime", Opcodes.ACC_PRIVATE, ClassHelper.Long_TYPE,  new ConstantExpression(0L))
+        annotatedClass.addField("objectCreationTime", Opcodes.ACC_PRIVATE, ClassHelper.Long_TYPE,  new ConstantExpression(System.currentTimeMillis()))
 
         final timestampGetter = new AstBuilder().buildFromString("objectCreationTime")
         annotatedClass.addMethod(timestampFieldName, Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL, ClassHelper.Long_TYPE, [] as Parameter[], [] as ClassNode[], timestampGetter[0])
@@ -70,6 +67,7 @@ public class CreatedAtTransformation implements ASTTransformation {
         final timestampUpdater = new AstBuilder().buildFromString('''
             if (System.currentTimeMillis() - objectCreationTime > 1000){
                 objectCreationTime = System.currentTimeMillis()
+                println "objectCreationTime: ${objectCreationTime}"
             }
         ''')
         List<MethodNode> methods = annotatedClass.getMethods()
@@ -80,7 +78,6 @@ public class CreatedAtTransformation implements ASTTransformation {
         
         final timestampResetter = new AstBuilder().buildFromString("objectCreationTime = 0L; return")
         annotatedClass.addMethod("clearTimestamp", Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL, ClassHelper.VOID_TYPE, [] as Parameter[], [] as ClassNode[], timestampResetter[0])
-        
     }
 }
 
@@ -123,6 +120,7 @@ assert oldTimeStamp < calculator.timestamp()
 assert calculator.timestamp() == calculator.timestamp()
 
 oldTimeStamp = calculator.timestamp()
+
 sleep(100)
 calculator.subtract(1)
 assert calculator.sum == 8

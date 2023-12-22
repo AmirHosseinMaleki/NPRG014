@@ -6,10 +6,77 @@
 // This means that parentheses must be placed where necessary with respect to the mathematical operator priorities.
 // Change or add to the code in the script. Reuse the infrastructure code at the bottom of the script.
 class NumericExpressionBuilder extends BuilderSupport {
-
+     protected void setParent(Object parent, Object child) {
+         parent.children << child
+     }
+     protected Object createNode(Object nodeName) {
+         createNode nodeName, null, null
+     }
+     protected Object createNode(Object nodeName, Object value) {
+         createNode nodeName, null, value
+     }
+     protected Object createNode(Object nodeName, Map attrs) {
+         createNode nodeName, attrs, null
+     }
+     protected Object createNode(Object nodeName, Map attrs, Object value) {
+         final node = new Item(nodeName)
+         if (value) node.value = value
+         if (attrs) {
+             node.value = attrs.value.toString()
+         }                 
+         return node
+     }
+    
+    @Override
+    String toString() {
+        buildString(0)
+    }
 }
 
 class Item {
+ //...
+ final String name
+ final List children = []
+ String value
+ public Item(String name) {
+     this.name = name
+ }
+ @Override
+ String toString() {
+     buildString(0)
+ }
+ String buildString(indent) {
+    def builder = new StringBuilder()
+
+    if (children.isEmpty()) {
+        builder << value
+    } else {
+        def operation = name
+        if (name == 'power') {
+            operation = '^'
+        }
+
+        if (operation in ['-'] && children.size() > 1) {
+            builder << '('
+        }
+
+        for (child in children) {
+            builder << child.buildString(indent + 1)
+            if (child != children.last()) {
+                builder << " $operation "
+            }
+        }
+
+        if (operation in ['-'] && children.size() > 1) {
+            builder << ')'
+        }
+    }
+    return builder.toString()
+ }
+}
+
+
+// ------------------------- Do not modify beyond this point!
     @Override
     public String toString() {
         super.toString()
@@ -20,10 +87,11 @@ class Item {
 def build(builder, String specification) {
     def binding = new Binding()
     binding['builder'] = builder
-    new GroovyShell(binding).evaluate(specification)
+    def tmp = new GroovyShell(binding)
+    return tmp.evaluate(specification)
 }
 
-//Custom expression to display. It should be eventually pretty-printed as 10 + x * (2 - 3) / 8 ^ (9 - 5)
+// Custom expression to display. It should be eventually pretty-printed as 10 + x * (2 - 3) / 8 ^ (9 - 5)
 String description = '''
 builder.'+' {
     number(value: 10)

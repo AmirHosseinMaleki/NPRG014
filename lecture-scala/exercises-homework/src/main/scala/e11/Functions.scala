@@ -4,6 +4,7 @@ package e11
  * - anonymous functions and function parameters
  */
 object Functions:
+	// Quick Sort
 	def sort(xs: Array[Int]): Array[Int] =
 		if (xs.length <= 1) then
 			xs
@@ -13,6 +14,17 @@ object Functions:
 					sort(xs.filter(pivot.>)),
 					xs.filter(pivot.==),
 					sort(xs.filter(pivot.<))
+			)
+	
+	def sort(xs: Array[Int], compare:(Int,Int) => Int): Array[Int] =
+		if(xs.length <= 1) then
+			xs
+		else
+			val pivot = xs(xs.length / 2)
+			Array.concat(
+					sort(xs.filter(compare(pivot.>) >0).compare),
+					xs.filter(compare(pivot.>) == 0),
+					sort(xs.filter(compare(pivot.>)) < 0)
 			)
 
 	def concatArray[T](items: Array[T], fcn: T => String) =

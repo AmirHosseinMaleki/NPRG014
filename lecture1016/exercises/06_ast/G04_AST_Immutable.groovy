@@ -1,7 +1,7 @@
 @groovy.transform.Immutable class Product {
-    String code
-    String name
-    int price
+    final String code
+    final String name
+    final int price
 }
 
 return new Product("PR4823", "MPS", 0)

@@ -8,5 +8,7 @@ println([day, month, year].join('. '))
 
 //TASK Concatenate upper-case variants of these words with "spaces" between them using the join() method.
 //assert "HELLO GROOVY HOW ARE YOU?" == ["Hello", "Groovy", "how", "are", "you?"]
-
+def words = ["Hello", "Groovy", "how", "are", "you?"]
+def result = words.collect {it.toUpperCase()}.join(' ')
+assert "HELLO GROOVY HOW ARE YOU?" == result
 println 'ok'

@@ -45,7 +45,9 @@ object StatisticsByInterface:
 
   def iqr[T](xs: Array[NumberLike[T]]): NumberLike[T] = quartiles(xs) match
     case (lowerQuartile, _, upperQuartile) => upperQuartile - lowerQuartile
-
+    
+  // Structural Subtyping
+  // def mean[T](xs: Array[{def + (other: T): T}]): NumberLike[T] =
   def mean[T](xs: Array[NumberLike[T]]): NumberLike[T] =
     xs.reduce(_ + _) / xs.size
 

@@ -1,5 +1,6 @@
 package e28
 
+// trait Func2P[+O, -I1, -I2]:
 trait Func2P[O, I1, I2]:
 	def execute(x1: I1, x2: I2): O
 

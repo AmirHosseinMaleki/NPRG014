@@ -8,6 +8,14 @@ import scala.language.implicitConversions
  * - import of implicit defs in a function body
  */
 
+trait VerboseComparable[T] extends Ordered[T]:
+	private def testVerbose(validity: Boolean) = if (validity) "is" else "isn't"
+
+	def #<(that: T) = s"${this}${testVerbose(this < that)} strictly less than ${that}"
+	def #<=(that: T) = s"${this}${testVerbose(this <= that)} less or equal to ${that}"
+	def #>(that: T) = s"${this}${testVerbose(this > that)} strictly more than ${that}"
+	def #>=(that: T) = s"${this}${testVerbose(this >= that)} more or equal to ${that}"
+
 trait Ordered[T]:
 	def compare(that: T): Int
 
@@ -17,7 +25,7 @@ trait Ordered[T]:
 	def >=(that: T) = (this compare that) >= 0
 
 
-class Rational(n: Int, d: Int) extends Ordered[Rational]:
+class Rational(n: Int, d: Int) extends Ordered[Rational] /*with Myserializabale*/:
 	require(d != 0)
 
 	private val g = gcd(n.abs, d.abs)
@@ -63,7 +71,7 @@ object Traits:
 
 		/* ASSIGNMENT:
 		 * Introduce a new trait VerboseComparable that adds operations #<, #<=, #>, #>=, which return a string result as follows:
-		 * 
-		 * println(a #>= b) // 3/2 is more or equal to 73/56
-		 * println(a #< b)	// 3/2 isn't strictly less than 73/56	
 		 */
+		println(a #>= b) // 3/2 is more or equal to 73/56
+		println(a #< b)	// 3/2 isn't strictly less than 73/56	
+		 

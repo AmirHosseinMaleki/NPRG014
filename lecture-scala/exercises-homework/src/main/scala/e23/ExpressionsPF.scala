@@ -21,6 +21,7 @@ object ExpressionsPF:
 
 		val expr = BinOp("*", Var("x"), Number(1))
 		val sExpr = expr.simplifyUsing {
+			//input => input match
 			case BinOp("+", Number(0), e) => e
 			case BinOp("+", e, Number(0)) => e
 			case BinOp("*", Number(1), e) => e

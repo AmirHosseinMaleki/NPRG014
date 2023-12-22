@@ -19,11 +19,18 @@ final doc = builder.order() {
             amount 25
             currency 'CZK'
         }
+        suger{}
+        cream{}
     }
-    vodka() {
+    vodka(count: 10) {
+        price {
+            amount 30
+            currency 'CZK'
+        }
+        size('big')
+        
     }    
 }
-
 //TASK enhance the builder code so as the following test passes
 
 assert '''<order>

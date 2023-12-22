@@ -12,6 +12,13 @@ object ControlTest:
 		finally
 			writer.close()
 
+	def ifThenElse[T](condition: Boolean)(thenOp: => T)(elseOp: => T): T =
+		if condition then
+			thenOp
+		else
+			elseOp
+
+
 	def doNTimes(times: Int)(op: => Unit): Unit =
 		for i <- 1 to times do
 			op

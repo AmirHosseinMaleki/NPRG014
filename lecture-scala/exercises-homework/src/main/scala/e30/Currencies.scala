@@ -30,11 +30,15 @@ abstract class Currency:
 
     def designation = currency.designation
 
+    def to(currency: Currency) = currency.make(math.round(amount.toDouble * Converter.exchangeRate(designation)(currency.designation)))
 
+
+
+// this.CurrencyAmount -> my currency amount
   def make(amnt: Long) = new CurrencyAmount {
     val amount = amnt
   }
-
+// Currency#CurrencyAmount -> not my currency amount, without asumming that is mine
   def from(other: Currency#CurrencyAmount): CurrencyAmount =
     make(math.round(other.amount.toDouble * Converter.exchangeRate(other.designation)(designation)))
 
@@ -78,3 +82,6 @@ object Currencies:
 
     println(dollars to EUR)
     */
+    println(dollars to EUR)
+
+

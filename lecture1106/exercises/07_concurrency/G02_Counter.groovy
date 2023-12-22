@@ -1,10 +1,19 @@
 class Counter {
     static long counter = 0
+    //static Long counter = 0
+    private static Object lock = new Object()
+
+    Counter() {
+        synchronized(Counter.class){
+            counter++
+
+        }
+    }
 }
 
 final threads = (1..50).collect {
     Thread.start {
-        Counter.counter++
+        new Counter()
     }
 }
 

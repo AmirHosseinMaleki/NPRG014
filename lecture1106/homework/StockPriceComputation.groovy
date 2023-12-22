@@ -59,32 +59,54 @@ group.with {
     //input channels
     final parisEURPrices = new DataflowQueue()
     final viennaEURPrices = new DataflowQueue()
-    final frankfurtEURPrices = new DataflowQueue()    
+    final frankfurtEURPrices = new DataflowQueue()
     final chicagoUSDPrices = new DataflowQueue()
     final usd2eurRates = new DataflowQueue()
 
     //output channels
     final avgPrices = new DataflowQueue()
     final fiveDayAverages = new DataflowQueue()
-    
+
     //================================= do not modify above this point
-    
+
     //implement the three operators and utility intermediate channels here
 
+    // intermediate channels
+    final chicagoEURPrices = new DataflowQueue()
+    final nonZeroParisPrices = new DataflowQueue()
+    final avgPricesMiddle = new DataflowQueue()
 
+    operator(inputs: [chicagoUSDPrices, usd2eurRates], outputs: [chicagoEURPrices]) { chicagoUSDPrice, usd2eurRate ->
 
+        bindOutput(0,chicagoUSDPrice * usd2eurRate)
+    }
 
+    operator(inputs:[parisEURPrices], outputs:[nonZeroParisPrices], stateObject:[latestValue: 0]) { parisEURPrice ->
+        if(parisEURPrice != 0)
+            stateObject.latestValue = parisEURPrice
 
+        bindOutput(0,stateObject.latestValue)
+    }
 
+    operator(inputs: [nonZeroParisPrices, viennaEURPrices, frankfurtEURPrices, chicagoEURPrices], outputs: [avgPrices,avgPricesMiddle]) { nonZeroParisPrice, viennaEURPrice, frankfurtEURPrice, chicagoEURPrice ->
 
+        def dailyAverage = (nonZeroParisPrice + viennaEURPrice + frankfurtEURPrice + chicagoEURPrice) / 4
 
+        bindAllOutputs(dailyAverage)
 
+    }
 
+    operator(inputs:[avgPricesMiddle], outputs:[fiveDayAverages], stateObject:[pa4:0, pa3:0, pa2:0, pa1:0, dn:0]) { avgPricesMid ->
+        if(stateObject.dn < 5){
+            stateObject.dn += 1
+        }
 
-
-
-
-
+        bindOutput(0,(stateObject.pa4 + stateObject.pa3 + stateObject.pa2 + stateObject.pa1 + avgPricesMid) / stateObject.dn)
+        stateObject.pa4 = stateObject.pa3
+        stateObject.pa3 = stateObject.pa2
+        stateObject.pa2 = stateObject.pa1
+        stateObject.pa1 = avgPricesMid
+    }
 
     //================================= do not modify beyond this point    
 

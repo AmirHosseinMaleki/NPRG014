@@ -30,12 +30,21 @@ class Rational(n: Int, d: Int):
 	def / (that: Rational) = Rational(numer * that.denom, denom * that.numer)
 	def unary_- = Rational(-numer, denom)
 
+	def <-^ (n: Int) = Rational(n, denom)
+	def unary_! = Rational(denom, numer)
+
+
+
 	// In future versions of Scala, methods with non-symbolic names will only be allowed as
 	// operators if they are declared with the infix modifier.
 	infix def withDenom(i: Int) = Rational(numer, denom)
 
 	override def toString = s"${numer}/${denom}"
 	private def gcd(a: Int, b: Int): Int = if b == 0 then a else gcd(b, a % b)
+
+// object Rational:
+//     implicit def intToRational(n: Int): Rational = Rational(n)
+
 
 
 object RationalTest:
@@ -48,6 +57,10 @@ object RationalTest:
 		println(c)
 
 		println(c withDenom 9)
+		
+		println(c <-^ 11)
+		println(!c)
+		//println(R ~ 5/3)
 
 		/* ASSIGNMENT 1
 		 * Implement an operator that sets the numerator to a given value

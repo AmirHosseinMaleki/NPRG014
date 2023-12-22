@@ -25,6 +25,15 @@ class MyList[T] private(private val item: T, private val next: MyList[T]):
 
     result.toString()
 
+    
+  def apply(index: Int): T =
+    if index == 0 then
+      item
+    else if next != null then
+      next(index - 1)
+    else
+      throw new IndexOutOfBoundsException
+
 
 object MyList:
   def apply[T](items: T*): MyList[T] =

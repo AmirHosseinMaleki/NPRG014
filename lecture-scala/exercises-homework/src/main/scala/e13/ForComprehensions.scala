@@ -11,6 +11,13 @@ object ForComprehensions:
 		for i <- 1 to 10 do
 			println(i)
 
+		// (1 to 10.foreach){
+		// 	println(i)
+		// }
+		// (1 to 10).foreach{
+		// 	println(i)
+		// }
+
 		val filesHere = (new java.io.File("src/main/scala/e13")).listFiles
 
 		def fileLines(file: java.io.File) = scala.io.Source.fromFile(file).getLines.toList

@@ -6,10 +6,11 @@ import groovyx.gpars.dataflow.DataflowBroadcast
 import groovyx.gpars.group.NonDaemonPGroup
 import groovyx.gpars.group.PGroup
 
-def checkEngine() {
+def checkEngine(elTest) {
     println "Checking the engine"
     sleep 3000
-    return true
+    if (elTest.get()) return true
+    else return false
 }
 
 def checkTyres() {
@@ -24,8 +25,7 @@ def checkElectricity() {
     return System.currentTimeMillis() % 3 == 0 ? true : false
 }
 
-def checkRadar() {
-    def elTest = task { checkElectricity() }
+def checkRadar(elTest) {
     println "Turning radar on"
     sleep 1000
     if (elTest.get()) {
@@ -38,9 +38,10 @@ def checkRadar() {
     }
 }
 
-def engineCheck = task { checkEngine() }
+def elTest = task { checkElectricity() }
+def engineCheck = task { checkEngine(elTest) }
 def tyrePressure = task { checkTyres() }
-def radarOn = task { checkRadar() }
+def radarOn = task { checkRadar(elTest) }
 
 engineCheck.then {println "Engine ok"}
 tyrePressure.then {println "Tyres ok"}

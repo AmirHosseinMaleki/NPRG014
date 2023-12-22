@@ -29,11 +29,13 @@ class TreasureBox {
         if (key == "1144") {
            key3 = true        
            println "Unlocking with the police director key"
-           Thread.sleep(1000)           
+           Thread.sleep(1000)   
+           awake()        
         }
     }
     
     def open() {
+        await()
        if (key1 && key2 && key3) {
            println "Opening the box and showing " + this.treasure
        } else {

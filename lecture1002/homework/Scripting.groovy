@@ -18,8 +18,22 @@
 List<String> processNumbers(List<Operation> userInput, List<String> numbers) {
     //Function that runs the provided operations on the provided collection of numbers. Needs to be implemented.
     // ...
-}
+    def binding = new Binding()
+    binding.setVariable("LENGTH", numbers.size())
 
+    GroovyShell shell = new GroovyShell(binding)
+
+    userInput.each { operation ->
+        if (operation.type == OperationType.FILTER) {
+            def filter = shell.evaluate("{ it -> ${operation.command} }")
+            numbers = numbers.findAll { filter(it) }
+        } else if (operation.type == OperationType.TRANSFORMATION) {
+            def transform = shell.evaluate("{ it -> ${operation.command} }")
+            numbers = numbers.collect { transform(it) }
+        }
+    }
+    return numbers
+}
 
 
 //************* Do not modify after this point!

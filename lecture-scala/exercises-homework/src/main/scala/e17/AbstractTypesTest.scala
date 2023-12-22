@@ -10,7 +10,7 @@ class Fish extends Food
 class Plants extends Food
 class Grass extends Plants
 
-abstract class Animal:
+abstract class Animal/*[SuitableFood <: Food]*/:
 	outer =>
 
 	type SuitableFood <: Food
@@ -44,6 +44,7 @@ object AbstractTypesTest:
 		val shawn = new Shark(20)
 
 		val animal: Animal = bessy
+		//val animal: Animal[Grass] = bessy
 
 		val grass = new Grass
 

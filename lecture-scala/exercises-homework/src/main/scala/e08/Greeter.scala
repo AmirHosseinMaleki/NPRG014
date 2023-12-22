@@ -1,5 +1,7 @@
 package e08
 
+import scala.compiletime.ops.int
+
 /* Features:
  * - given and using
  * - given imports
@@ -16,7 +18,6 @@ object Greeter:
     print("But while you work, ")
     println(s"why not enjoy a cup of ${drink.preference}?")
     println(prompt.preference)
-
 
 object JoesPrefs:
   given prompt: PreferredPrompt =
@@ -46,6 +47,7 @@ object GreeterTest:
     *   But while you work, why not enjoy a cup of water?
     *   relax>
     */
-
-    Greeter.greet("Jill")
+  
+    import JoesPrefs.given
+    Greeter.greet("Jill")(using drink = PreferredDrink("water"))
 
